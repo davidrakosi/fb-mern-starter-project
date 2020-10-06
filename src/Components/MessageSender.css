@@ -29,8 +29,17 @@
     background-color: #eff2f5;
 }
 
+.messageSender__fileSelector {
+    width: 20%;
+}
+
 .messageSender__top>form>button {
-    /* display: none; */
+
+    height: 0;
+    width: 0;
+    background-color: transparent;
+    color: transparent;
+    border: none;
 }
 
 .messageSender__input {

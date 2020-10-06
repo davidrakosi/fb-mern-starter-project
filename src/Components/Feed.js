@@ -4,20 +4,19 @@ import MessageSender from './MessageSender'
 import Post from './Post'
 import StoryReel from './StoryReel'
 import axios from '../axios'
+import Pusher from 'pusher-js'
+
+import db from '../firebase'
 
 const Feed = () => {
     const [profilePic, setProfilePic] = useState('')
     const [postsData, setPostsData] = useState([])
 
     useEffect(() => {
-        axios.get('/api/retrieve/posts')
-            .then((res) => {
-                console.log(res.data)
-                setPostsData(res.data)
-            })
-
+        db.collection('posts').onSnapshot(snapshot => (
+            setPostsData(snapshot.docs.map(doc => ({ id: doc.id, data: doc.data() })))
+        ))
     }, [])
-
 
     return (
         <div className='feed' >
@@ -27,36 +26,14 @@ const Feed = () => {
             {
                 postsData.map(entry => (
                     <Post
+                        profilePic={entry.avatar}
                         message={entry.text}
-                        timestamp={'this is a timestamp'}
+                        timestamp={entry.timestamp}
                         imgName={entry.imgName}
                         username={entry.user}
                     />
                 ))
             }
-
-            {/* <Post
-                porfilePic='https://avatars2.githubusercontent.com/u/24712956?s=400&u=b71527e605ae1b748fc2d4157a842e57e427ad44&v=4'
-                message='test message'
-                timestamp='this is a timestamp'
-                username='Sonny Sangha'
-                image='https://www-crazyfamilyadventure-com.exactdn.com/wp-content/uploads/2018/10/Big-Sur-feature-resized-image.jpg'
-            />
-            <Post
-                porfilePic='https://avatars2.githubusercontent.com/u/24712956?s=400&u=b71527e605ae1b748fc2d4157a842e57e427ad44&v=4'
-                message='test message'
-                timestamp='this is a timestamp'
-                username='Sonny Sangha'
-                image='https://www-crazyfamilyadventure-com.exactdn.com/wp-content/uploads/2018/10/Big-Sur-feature-resized-image.jpg'
-            />
-            <Post
-                porfilePic='https://avatars2.githubusercontent.com/u/24712956?s=400&u=b71527e605ae1b748fc2d4157a842e57e427ad44&v=4'
-                message='test message'
-                timestamp='this is a timestamp'
-                username='Sonny Sangha'
-                image='https://www-crazyfamilyadventure-com.exactdn.com/wp-content/uploads/2018/10/Big-Sur-feature-resized-image.jpg'
-            /> */}
-
         </div>
     )
 }

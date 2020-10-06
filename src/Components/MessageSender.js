@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
 import './MessageSender.css'
-import { Avatar } from '@material-ui/core'
+import { Avatar, Input } from '@material-ui/core'
 import VideocamIcon from '@material-ui/icons/Videocam'
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary'
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
+import { useStateValue } from '../StateProvider'
+import firebase from 'firebase'
+import db from '../firebase'
+
 import axios from '../axios'
 import FormData from 'form-data'
 
@@ -11,6 +15,9 @@ const MessageSender = () => {
     const [input, setInput] = useState('')
     const [imageUrl, setImageUrl] = useState('')
     const [image, setImage] = useState(null)
+    const [{ user }, dispatch] = useStateValue()
+
+    console.log(user)
 
     const handleChange = (e) => {
         if (e.target.files[0]) {
@@ -21,61 +28,26 @@ const MessageSender = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if (image) {
-            const imgForm = new FormData()
-            imgForm.append('file', image, image.name)
-
-            axios.post('/api/upload/image', imgForm, {
-                headers: {
-                    'accept': 'application/json',
-                    'Accept-Language': 'en-US,en;q=0.8',
-                    'Content-Type': `multipart/form-data; boundary=${imgForm._boundary}`,
-                }
-            }).then((res) => {
-                console.log(res.data)
-
-                const postData = {
-                    text: input,
-                    imgName: res.data.filename,
-                    user: 'Sonny Sangha'
-                }
-
-                console.log(postData)
-
-                savePost(postData)
-            })
-        } else {
-            const postData = {
-                text: input,
-                user: 'Sonny Sangha'
-            }
-
-            console.log(postData)
-
-            savePost(postData)
-        }
-
-
+        db.collection('posts').add({
+            message: input,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            profilePic: user.photoURL,
+            username: user.displayName,
+            image: imageUrl
+        })
 
         setImageUrl('')
         setInput('')
-    }
-
-    const savePost = async (postData) => {
-        await axios.post('/api/upload/post', postData)
-            .then((resp) => {
-                console.log(resp)
-            })
+        setImage(null)
     }
 
     return (
         <div className='messageSender' >
             <div className="messageSender__top">
-                <Avatar src='https://avatars2.githubusercontent.com/u/24712956?s=400&u=b71527e605ae1b748fc2d4157a842e57e427ad44&v=4' />
+                <Avatar src={user.photoURL} />
                 <form >
                     <input type="text" className='messageSender__input' placeholder="What's on your mind?" value={input} onChange={(e) => setInput(e.target.value)} />
-                    {/* <input type="text" placeholder='image URL (Optinal)' value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} /> */}
-                    <input type="file" onChange={handleChange} />
+                    <Input type="file" className='messageSender__fileSelector' onChange={handleChange} />
                     <button onClick={handleSubmit} type='submit' >Hidden Submit</button>
                 </form>
             </div>
