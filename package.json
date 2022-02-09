@@ -8,7 +8,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "axios": "^0.20.0",
+    "axios": "^0.25.0",
     "firebase": "^7.21.1",
     "form-data": "^3.0.0",
     "javascript-time-ago": "^2.0.13",
