@@ -11,7 +11,7 @@
     "axios": "^0.20.0",
     "firebase": "^7.21.1",
     "form-data": "^3.0.0",
-    "javascript-time-ago": "^2.0.13",
+    "javascript-time-ago": "^2.3.11",
     "pusher-js": "^7.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
