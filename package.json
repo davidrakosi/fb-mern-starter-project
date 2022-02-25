@@ -15,7 +15,7 @@
     "pusher-js": "^7.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.3"
+    "react-scripts": "3.4.4"
   },
   "scripts": {
     "start": "react-scripts start",
